@@ -73,6 +73,8 @@ res.sort_values(['area','cluster','cluster_name','count'], ascending=[True, True
 res.reset_index(inplace=True, drop=True)
 res
 
+res.to_csv('out.csv')
+
 """# Часть 2. Построение графиков
 
 Внимание, для корректной работы дальнейшего кода необходим модуль python-intervals! Вы можете его установить, введя в консоль: 
@@ -94,15 +96,15 @@ import pandas as pd
 
 SYMBOLS_FOR_CARRY = 15
 ONE_LINE_SIZE = 0.4
-INTERVAL_STEP = 0.1 # 0.35
+INTERVAL_STEP = 0.1*3.2 # 0.35
 BIAS = 0.1
-TEXT_SIZE = 10
-POINT_SIZE = 70
+TEXT_SIZE = 10*3.2
+POINT_SIZE = 70*3.2*4
 
-def plot_graph(name, t_x=1, t_y=-0.045, k1=-0.5, k2=-0.3, k3=-2.5, k4=1, k5=1, n=0):
-  a4_dims = (11.7, 8.27)
+def plot_graph(name, t_x=1, t_y=-0.045, k1=-0.5, k2=-0.3, k3=-2.5, k4=1, k5=1, n=0, sym=0):
+  a4_dims = (11.7*3.2, 8.27*3.2)
   fig, ax = plt.subplots(figsize=a4_dims)
-  plt.title('Диаграмма рассеяния для ' +  str(name), x= t_x , y= t_y) 
+  plt.title('Диаграмма рассеяния для ' +  str(name), x= t_x , y= t_y, size=TEXT_SIZE) 
             # fontfamily = 'fantasy',
             # fontstyle  = 'oblique',
             # fontsize   = 10)
@@ -117,7 +119,11 @@ def plot_graph(name, t_x=1, t_y=-0.045, k1=-0.5, k2=-0.3, k3=-2.5, k4=1, k5=1, n
 
   # Scatterplot display
   sns.scatterplot(data = cur_df, x = "x", y = "y", hue="color", style="cluster_name", s = POINT_SIZE)
-  ax.legend(loc="upper left", bbox_to_anchor=(1.25,0.31))
+  params = {'legend.fontsize': 32,
+          'legend.handlelength': 3}
+
+  plt.rcParams.update(params)
+  ax.legend(loc="upper left", markerscale=5, bbox_to_anchor=(1.25,0.31))
 
 
   # Text overlay processing
@@ -131,11 +137,11 @@ def plot_graph(name, t_x=1, t_y=-0.045, k1=-0.5, k2=-0.3, k3=-2.5, k4=1, k5=1, n
     carry_flag = False
 
     if len(text) > SYMBOLS_FOR_CARRY:
-      if text[SYMBOLS_FOR_CARRY-1:].find(' ')>0:
-        pos = text[SYMBOLS_FOR_CARRY-1:].find(' ')
+      if text[SYMBOLS_FOR_CARRY-1+sym:].find(' ')>0:
+        pos = text[SYMBOLS_FOR_CARRY-1+sym:].find(' ')
         # print(pos)
         # print(text[:14+pos]+'\n'+text[15+pos:])
-        text = text[:SYMBOLS_FOR_CARRY-1+pos]+'\n'+text[SYMBOLS_FOR_CARRY+pos:]
+        text = text[:SYMBOLS_FOR_CARRY-1+sym+pos]+'\n'+text[SYMBOLS_FOR_CARRY+pos+sym:]
         y_position = y_position-ONE_LINE_SIZE
         carry_flag = True
         
@@ -162,7 +168,7 @@ cur_df = res.loc[res['area'] == 'ar\\vr']
 cur_df.reset_index(inplace=True, drop=True)
 # cur_df
 
-plot_graph('ar\\vr', t_x=1, t_y=-0.045, k1=-1, k2=+0, k3=-2.5)
+plot_graph('ar\\vr', t_x=1, t_y=-0.045, k1=-0.5, k2=+0, k3=-2.5)
 
 """## available"""
 
@@ -178,7 +184,7 @@ cur_df = res.loc[res['area'] == 'capability']
 cur_df.reset_index(inplace=True, drop=True)
 # cur_df
 
-plot_graph('capability', t_x=1, t_y=-0.045, k1=-1, k2=+0, k3=-2.5)
+plot_graph('capability', t_x=1, t_y=-0.045, k1=-1.35, k2=+0, k3=-2.5)
 
 """## dialog"""
 
@@ -235,7 +241,7 @@ cur_df = res.loc[res['area'] == 'housewives']
 cur_df.reset_index(inplace=True, drop=True)
 # cur_df
 
-plot_graph('housewives', t_x=1, t_y=-0.045, k1=-1, k2=+0, k3=-2.5)
+plot_graph('housewives', t_x=1, t_y=-0.045, k1=-1, k2=+0, k3=-1.5, k4=0.3)
 
 """## lithuania"""
 
@@ -243,7 +249,7 @@ cur_df = res.loc[res['area'] == 'lithuania']
 cur_df.reset_index(inplace=True, drop=True)
 # cur_df
 
-plot_graph('lithuania', t_x=1, t_y=-0.045, k1=-1, k2=+0, k3=-2.5, k4=4)
+plot_graph('lithuania', t_x=1, t_y=-0.045, k1=-0.6, k2=+0, k3=-2.5, k4=4)
 
 """## locator"""
 
@@ -251,7 +257,7 @@ cur_df = res.loc[res['area'] == 'locator']
 cur_df.reset_index(inplace=True, drop=True)
 # cur_df
 
-plot_graph('locator', t_x=1, t_y=-0.045, k1=1, k2=+0, k3=-2.5)
+plot_graph('locator', t_x=1, t_y=-0.045, k1=0.6, k2=+0, k3=-2.5)
 
 """## personnel"""
 
@@ -267,7 +273,7 @@ cur_df = res.loc[res['area'] == 'protein']
 cur_df.reset_index(inplace=True, drop=True)
 # cur_df
 
-plot_graph('protein', t_x=1, t_y=-0.05, k1=-0.5, k2=+0, k3=-6.5)
+plot_graph('protein', t_x=1, t_y=-0.05, k1=0, k2=0, k3=-6.5, sym=2)
 
 """## twisted"""
 
@@ -289,9 +295,9 @@ plot_graph('winner', t_x=1, t_y=-0.045, k1=-1, k2=+0.2, k3=-2.5)
 
 cur_df = res.loc[res['area'] == 'worlds']
 cur_df.reset_index(inplace=True, drop=True)
-cur_df
+# cur_df
 
-plot_graph('worlds', t_x=1, t_y=-0.045, k1=0.7, k2=-0.3, k3=-2.5, k4=3)
+plot_graph('worlds', t_x=1, t_y=-0.045, k1=0.3, k2=-0.15, k3=-2.5, k4=1, k5=2)
 
 """## End"""
 
